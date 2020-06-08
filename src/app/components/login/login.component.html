@@ -1,0 +1,17 @@
+<div fxLayoutAlign="center center" fxFlexFill class="main-div">
+    <mat-card fxFlex="25"> <!--Percent screen-->
+        <mat-toolbar color="primary">Iniciar sesión</mat-toolbar>
+        <form flexLayoutAlign="stretch" fxLayout="column" class="login-form" [formGroup] = "formGroup">
+            <mat-form-field>
+                <input matInput placeholder="Email" formControlName="email">
+            </mat-form-field>
+
+            <mat-form-field>
+                <input matInput type="password" placeholder="Password" formControlName="password">
+            </mat-form-field>
+
+            <button mat-raised-button (click)="login()" class="mt-5" color="primary">Login</button>
+            <button mat-raised-button type="button" style="margin-top: 5px;" color="primary">Registrarse</button>
+        </form>
+    </mat-card>
+</div> 
