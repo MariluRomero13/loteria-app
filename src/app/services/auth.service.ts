@@ -14,8 +14,25 @@ export class AuthService {
     return this.http.post(`${BASE_URL}login`, data)
   }
 
+  logout(): Observable<any> {
+    return this.http.post(`${BASE_URL}logout`, {refresh_token: localStorage.getItem("refreshToken")})
+  }
+
   saveTokens (data) {
     localStorage.setItem('token', data['token'])
     localStorage.setItem('refreshToken', data['refreshToken'])
+  }
+
+  isLoggedIn() { 
+    return !!localStorage.getItem('token')
+  }
+
+  getToken() {
+    return localStorage.getItem('token')
+  }
+
+  removeTokens() {
+    localStorage.removeItem('token')
+    localStorage.removeItem('refreshToken')
   }
 }

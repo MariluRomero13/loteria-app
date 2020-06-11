@@ -11,6 +11,8 @@ import { FlexLayoutModule } from '@angular/flex-layout'
 import { HttpClientModule } from '@angular/common/http'
 import { AuthService } from './services/auth.service';
 import { RegisterComponent } from './components/register/register.component';
+import {MainComponent } from './components/main/main.component'
+import { AuthGuard } from './guards/auth.guard';
 
 
 
@@ -19,7 +21,7 @@ import { RegisterComponent } from './components/register/register.component';
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    RegisterComponent
+    MainComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +33,7 @@ import { RegisterComponent } from './components/register/register.component';
     ReactiveFormsModule,
     HttpClientModule
   ], 
-  providers: [AuthService],
+  providers: [AuthService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
