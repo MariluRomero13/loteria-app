@@ -123,5 +123,8 @@
       }
     }
   },
-  "defaultProject": "loteria-app"
+  "defaultProject": "loteria-app",
+  "cli": {
+    "analytics": "d8e734c3-de2f-420d-a306-6da349c164b3"
+  }
 }

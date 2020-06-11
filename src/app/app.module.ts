@@ -10,13 +10,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout'
 import { HttpClientModule } from '@angular/common/http'
 import { AuthService } from './services/auth.service';
+import { RegisterComponent } from './components/register/register.component';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
+    RegisterComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
