@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import {UserService} from 'src/app/services/user.service'
+import {UserService} from 'src/app/services/user.service';
+import {Router} from '@angular/router';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -8,23 +9,23 @@ import {UserService} from 'src/app/services/user.service'
 })
 export class RegisterComponent implements OnInit {
   formGroup: FormGroup
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private router: Router) { }
 
   ngOnInit(): void {
     this.initForm()
   }
   initForm(){
     this.formGroup = new FormGroup({
-      username: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required]),
-      password: new FormControl('', [Validators.required])
+      username: new FormControl('', [Validators.required,Validators.min(4)]),
+      email: new FormControl('', [Validators.required,Validators.min(4),Validators.email]),
+      password: new FormControl('', [Validators.required,Validators.min(4)])
     })
   }
   signin(){
-    console.log(this.formGroup.value)
     if (this.formGroup.valid){
       this.userService.signin(this.formGroup.value).subscribe(res =>{
         if(res){
+          this.router.navigate(['/login']);
           console.log(res)
         }
       }, error => {

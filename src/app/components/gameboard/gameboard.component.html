@@ -1,0 +1,13 @@
+<mat-card>Simple card</mat-card>
+<mat-card>
+    <mat-grid-list cols="4">    
+        <div *ngFor="let card of cardsArray"style="width:55%;">
+            <img mat-card-image src="{{card.img}}" alt="Photo of a Shiba Inu">
+        </div>
+    </mat-grid-list>
+    <button mat-raised-button color="accent">Accent</button>
+    <button mat-raised-button>Basic</button>
+  <button mat-raised-button color="primary">Primary</button>
+</mat-card>
+
+

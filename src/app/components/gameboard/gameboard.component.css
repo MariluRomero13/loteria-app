@@ -1,0 +1,17 @@
+mat-grid-tile {
+    border-style: solid;
+  }
+mat-card {
+  float: left;
+  width:45%;
+}
+
+img{
+  display: inline;
+  height: 200px;
+  margin-right: 3%;
+  width: 120px;
+  float: left;
+}
+
+/*1.5652173913043478260869565217391‬*/
