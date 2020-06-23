@@ -1,0 +1,9 @@
+.selected {
+    background-color: blue;
+    background-image: none;
+}
+
+.cardNotFound {
+    display: none;
+    visibility: hidden;
+}

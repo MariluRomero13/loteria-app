@@ -1,0 +1,14 @@
+<h2 style="text-align: center;">Ingresa el link</h2>
+<mat-dialog-content>
+    <div>
+        <form flexLayoutAlign="stretch" fxLayout="column" [formGroup] = "formGroup">
+            <mat-form-field style="width: 100%;">
+                <input matInput placeholder="Link" formControlName="link" required>
+            </mat-form-field>
+        </form>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-raised-button color="primary">Comprobar Link</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="true">Cancelar</button>
+</mat-dialog-actions>

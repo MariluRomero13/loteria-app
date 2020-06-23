@@ -19,8 +19,9 @@ export class AuthService {
   }
 
   saveTokens (data) {
-    localStorage.setItem('token', data['token'])
-    localStorage.setItem('refreshToken', data['refreshToken'])
+    console.log(data['token'].token);
+    localStorage.setItem('token', data['token'].token)
+    localStorage.setItem('refreshToken', data['token'].refreshToken)
   }
 
   isLoggedIn() { 

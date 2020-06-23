@@ -15,6 +15,10 @@ import { AuthGuard } from './guards/auth.guard';
 import { GameboardComponent } from './components/gameboard/gameboard.component';
 
 import { MaterialModule } from './shared/material/material.module';
+import { ChooseGameModeComponent } from './components/choose-game-mode/choose-game-mode.component';
+import { DialogComponent } from './components/dialog/dialog.component';
+import { DialogInsertLinkComponent } from './components/dialog-insert-link/dialog-insert-link.component';
+import { GameComponent } from './components/game/game.component';
 
 
 @NgModule({
@@ -23,7 +27,11 @@ import { MaterialModule } from './shared/material/material.module';
     LoginComponent,
     RegisterComponent,
     MainComponent,
-    GameboardComponent
+    GameboardComponent,
+    ChooseGameModeComponent,
+    DialogComponent,
+    DialogInsertLinkComponent,
+    GameComponent
   ],
   imports: [
     BrowserModule,
