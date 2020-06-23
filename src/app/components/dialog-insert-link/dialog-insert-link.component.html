@@ -9,6 +9,6 @@
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button mat-raised-button color="primary">Comprobar Link</button>
+    <button (click) = "checkLink()" mat-raised-button color="primary">Comprobar Link</button>
     <button mat-raised-button color="primary" [mat-dialog-close]="true">Cancelar</button>
 </mat-dialog-actions>

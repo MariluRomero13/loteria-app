@@ -26,8 +26,9 @@ export class ChooseGameModeComponent implements OnInit {
     this.dialog.open(DialogInsertLinkComponent,this.style)
   }
 
-  play () {
-    this.router.navigate(['/game'])
+  playAlone () {
+    localStorage.removeItem('data')
+    this.router.navigate(['/main/game'])
   }
 
 }

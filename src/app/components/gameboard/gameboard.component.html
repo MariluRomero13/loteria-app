@@ -1,7 +1,7 @@
-<mat-card>Simple card</mat-card>
+ <!--<mat-card>Simple card</mat-card>-->
 <mat-card>
-    <mat-grid-list cols="4">    
-        <div *ngFor="let card of cardsArray"style="width:55%;">
+    <mat-grid-list cols="4" style="padding: 50px;left: auto;">    
+        <div *ngFor="let card of cardsArray">
             <img mat-card-image src="{{card.img}}" alt="Photo of a Shiba Inu">
         </div>
     </mat-grid-list>

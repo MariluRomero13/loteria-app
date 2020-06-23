@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ICard } from 'src/app/interfaces/card';
 import { CardsService } from 'src/app/services/cards.service';
 import Ws from '@adonisjs/websocket-client'
+import { AuthService } from 'src/app/services/auth.service';
+import { ActivatedRoute, Router } from '@angular/router';
 const ws = Ws('ws://192.168.0.13:3333', { path:'ws' })
 
 @Component({
@@ -11,26 +13,57 @@ const ws = Ws('ws://192.168.0.13:3333', { path:'ws' })
 })
 export class GameComponent implements OnInit {
   cards:ICard [] = new Array(16)
-  constructor(private cardService: CardsService) { }
+  constructor(private cardService: CardsService, private authService: AuthService, private route: ActivatedRoute,
+    private router: Router) { 
+    const data = this.authService.getDataUser()
+    if (data !== null) {
+      this.data = JSON.parse(data)
+      this.link = this.data.link
+      this.isModerator = true
+    } else if (this.route.snapshot.params.link !== undefined) {
+      this.link = this.route.snapshot.params.link
+      this.isInvited = true
+      this.isPlayAlone = false
+    }
+  }
 
   card:ICard 
   isPlaying: boolean = false
   cardsPast: ICard[] = []
   cardsSelected = [] = []
   status = 1
+  isModerator: boolean = false
+  isPlayAlone: boolean = true
+  isInvited: boolean = false
+  data: any = null
+  link: string = null
+
   
 
   ngOnInit(): void {
+  
     ws.connect()
     ws.on('open', () => {
       console.log('isOpen');
       const random = ws.subscribe('random')
       random.on('ready',() => {
         random.on('new:random', (data) => {
-          console.log({data});
-          this.playSound(data.sound)
-          this.cardsPast.push(data)
-          console.log(this.cardsPast);
+          if(!this.isPlaying) return;
+          const link = data.userLink[0].links[0].link
+          if (this.isPlayAlone) {
+              this.card = data
+              this.playSound(data.sound)
+              this.cardsPast.push(data)
+          } else if (link !== null || link !== undefined){
+            if (this.link === link) {
+              this.card = data
+              this.playSound(data.sound)
+              this.cardsPast.push(data)
+            } else {
+              this.router.navigate(['/main/mode'])
+            }
+          }
+        
         })
       })
     })
@@ -43,10 +76,10 @@ export class GameComponent implements OnInit {
   }
 
   getRandomNumber(): void {
-    console.log(this.status);
+    console.log('satatus:' + this.status);
     if (this.isCardSelected() && this.isPlaying) {
       this.cardService.getRandomCard(this.status).subscribe(res => {
-        this.card = res
+        this.status = 0
       })
     } else {
       alert("Escoja una carta")
@@ -184,10 +217,10 @@ export class GameComponent implements OnInit {
   }
 
   isCenter (array): boolean {
-    return array.includes(6) 
-    && array.includes(7) 
-    && array.includes(10) 
-    && array.includes(11)
+    return array.includes(5) 
+    && array.includes(6) 
+    && array.includes(9) 
+    && array.includes(10)
   }
 
 

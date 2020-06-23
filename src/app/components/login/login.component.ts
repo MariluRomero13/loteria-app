@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
       this.authService.login(this.formGroup.value).subscribe(res => {
         if (res.hasOwnProperty('token')) {
           this.authService.saveTokens(res)
-          this.router.navigate(['/main'])
+          this.router.navigate(['/main/mode'])
         } 
       }, error => {
         switch(error.status) {

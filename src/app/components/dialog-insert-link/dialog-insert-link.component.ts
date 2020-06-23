@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { LinkService } from 'src/app/services/link.service';
+import { Router } from '@angular/router';
 
 
 
@@ -12,12 +14,28 @@ export class DialogInsertLinkComponent implements OnInit {
 
   formGroup: FormGroup
 
-  constructor() { }
+  constructor(private linkService: LinkService, private router: Router) { }
 
   ngOnInit(): void {
     this.formGroup = new FormGroup({
       link: new FormControl('',[Validators.required])
     })
+  }
+
+  checkLink (): void {
+    if(this.formGroup.valid) {
+      const link = this.formGroup.get('link').value
+      this.linkService.checkLink(link).subscribe(res => {
+        console.log(res);
+        if(!res.is_active) {
+          alert('El link es invalido')
+        } else {
+          this.router.navigate(["/main/game", link])
+        }
+      })
+    } else {
+      alert("Ingrese un link")
+    }
   }
 
 }

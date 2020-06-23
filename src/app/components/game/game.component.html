@@ -1,4 +1,4 @@
-<mat-grid-list cols="2" rowHeight="3:2">
+<mat-grid-list cols="2" rowHeight="3:2" style="margin-top: 20px;">
     <mat-grid-tile>
         <div style="width: 70%; height: 100%; margin: 50px;">
             <div *ngFor="let card of cards; let i = index" 
@@ -19,10 +19,14 @@
             <img *ngIf="card" mat-card-image width="100%" height="100%" src="{{card.img}}">
         </div>
 
-        <button mat-raised-button color="primary" (click)="getRandomNumber()" style="margin-left: 10px;">Sacar carta</button>
+        <button *ngIf="isModerator || isPlayAlone" mat-raised-button color="primary" (click)="getRandomNumber()" style="margin-left: 10px;">Sacar carta</button>
     
     </mat-grid-tile>
 </mat-grid-list>
+
+<div *ngIf="isModerator" style="margin-top: 20px; text-align: center;">
+    <h2>Este es tu link: {{ link }} para que lo compartas con tus amigos</h2>
+</div>
 
 
 
