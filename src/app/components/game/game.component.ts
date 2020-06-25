@@ -4,7 +4,7 @@ import { CardsService } from 'src/app/services/cards.service';
 import Ws from '@adonisjs/websocket-client'
 import { AuthService } from 'src/app/services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-const ws = Ws('ws://192.168.0.13:3333', { path:'ws' })
+const ws = Ws('ws://localhost:3333', { path:'ws' })
 
 @Component({
   selector: 'app-game',
@@ -16,11 +16,15 @@ export class GameComponent implements OnInit {
   constructor(private cardService: CardsService, private authService: AuthService, private route: ActivatedRoute,
     private router: Router) { 
     const data = this.authService.getDataUser()
+    console.log("dataaaaaa", data);
+    
     if (data !== null) {
+      console.log('data', data);
       this.data = JSON.parse(data)
       this.link = this.data.link
       this.isModerator = true
     } else if (this.route.snapshot.params.link !== undefined) {
+      console.log('data null', this.route.snapshot.params.link);
       this.link = this.route.snapshot.params.link
       this.isInvited = true
       this.isPlayAlone = false
@@ -48,22 +52,34 @@ export class GameComponent implements OnInit {
       const random = ws.subscribe('random')
       random.on('ready',() => {
         random.on('new:random', (data) => {
+          console.log(data);
+          // Se agrego la variable x que sustituye a la siguiente variable
+          // const link = data.userLink[0].links[0].link
+          let x = null; //variable link que se llena con el resultado de data
           if(!this.isPlaying) return;
-          const link = data.userLink[0].links[0].link
+          // Se realizo esta condicion por que cuando se juega solo de una persona el data.userLink[0].links[0].link esta vacio y truena la aplicacion
+          if (data.userLink[0].link > 0) {
+            x = data.userLink[0].links[0].link
+          }
           if (this.isPlayAlone) {
+              console.log("Play alone");
               this.card = data
               this.playSound(data.sound)
               this.cardsPast.push(data)
-          } else if (link !== null || link !== undefined){
-            if (this.link === link) {
+          } else if (x !== null || x !== undefined){
+            if (this.link === x) {
+              console.log('link');
+              
               this.card = data
               this.playSound(data.sound)
               this.cardsPast.push(data)
             } else {
               this.router.navigate(['/main/mode'])
             }
+          } else {
+            // En caso de que data regrese nulo
+            console.log('link is null');  
           }
-        
         })
       })
     })
