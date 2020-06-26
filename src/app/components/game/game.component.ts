@@ -6,7 +6,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogWinnerComponent } from '../dialog-winner/dialog-winner.component';
-const ws = Ws('ws://localhost:3333', { path:'ws' })
+const ws = Ws('ws://192.168.0.13:3333', { path:'ws' })
 
 @Component({
   selector: 'app-game',
@@ -18,7 +18,6 @@ export class GameComponent implements OnInit {
   constructor(private cardService: CardsService, private authService: AuthService, private route: ActivatedRoute,
     private router: Router, private dialog: MatDialog) { 
     const data = this.authService.getDataUser()
-    console.log("dataaaaaa", data);
     
     if (data !== null) {
       console.log('data', data);
@@ -46,10 +45,6 @@ export class GameComponent implements OnInit {
   isWinnerCentral: boolean = false
   isWinnerDiagonalLeft: boolean = false
   isWinnerDiagonalRight: boolean = false
-  isWinner: boolean = false
-
-
-  
 
   ngOnInit(): void {
   
@@ -90,9 +85,7 @@ export class GameComponent implements OnInit {
         console.log('winner open');
         winner.on('new:winner', (user) => {
           console.log(user);
-          if(this.isWinner) {
-            this.resetGame()
-          }
+          this.resetGame()
           console.log(this.status + "winnerStatus");
           this.openDialogWinner(user.username)
         })
@@ -174,7 +167,6 @@ export class GameComponent implements OnInit {
       alert("No le hagas al micky")
     }*/
     if (this.cardsSelected.length === 15) {
-      this.isWinner = true
       this.status = 2
       this.getRandomNumber()
     } else {
@@ -186,8 +178,7 @@ export class GameComponent implements OnInit {
   askCenterWinner (): void {
     if(this.isCenter()){
       this.isWinnerCentral = true
-      this.status = 2
-      this.getRandomNumber()
+      alert("ganaste central")
 
     } else {
       alert("No le hagas al micky")
@@ -197,8 +188,7 @@ export class GameComponent implements OnInit {
   askDiagonalLeftWinner(): void {
     if(this.isDiagonalLeft()) {
       this.isWinnerDiagonalLeft = true
-      this.status = 2
-      this.getRandomNumber()
+      alert("ganaste diagonal izquierda")
     } else {
       alert("No le hagas al micky")
     }
@@ -207,8 +197,7 @@ export class GameComponent implements OnInit {
   askDiagonalRightWinner(): void {
     if(this.isDiagonalRight()) {
       this.isWinnerDiagonalRight = true
-      this.status = 2
-      this.getRandomNumber()
+      alert("ganaste diagonal derecha")
     } else {
       alert("No le hagas al micky")
     }
@@ -233,7 +222,6 @@ export class GameComponent implements OnInit {
     this. isWinnerCentral= false
     this.isWinnerDiagonalLeft= false
     this.isWinnerDiagonalRight = false
-    this.isWinner= false
   }
   
 
