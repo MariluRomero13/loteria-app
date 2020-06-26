@@ -150,7 +150,7 @@ export class GameComponent implements OnInit {
     } else {
       alert("No le hagas al micky")
     }*/
-    if (this.cardsSelected.length === 15) {
+    if (this.cardsSelected.length === 16) {
       this.status = 2
       this.getRandomNumber()
     } else {
