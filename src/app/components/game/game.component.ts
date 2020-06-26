@@ -20,12 +20,10 @@ export class GameComponent implements OnInit {
     const data = this.authService.getDataUser()
     
     if (data !== null) {
-      console.log('data', data);
       this.data = JSON.parse(data)
       this.link = this.data.link
       this.isModerator = true
     } else if (this.route.snapshot.params.link !== undefined) {
-      console.log('data null', this.route.snapshot.params.link);
       this.link = this.route.snapshot.params.link
       this.isInvited = true
       this.isPlayAlone = false
@@ -50,13 +48,10 @@ export class GameComponent implements OnInit {
   
     ws.connect()
     ws.on('open', () => {
-      console.log('isOpen');
       const random = ws.subscribe('random')
       random.on('ready',() => {
         random.on('new:random', (data) => {
-          console.log(data);
           if (this.isPlayAlone) {
-              console.log("Play alone");
               this.card = data
               this.playSound(data.sound)
               this.cardsPast.push(data)
@@ -73,17 +68,10 @@ export class GameComponent implements OnInit {
         })
       })
 
-      
-
-
-
       const winner = ws.subscribe('winner')
       winner.on('ready', () => {
-        console.log('winner open');
         winner.on('new:winner', (user) => {
-          console.log(user);
           this.resetGame()
-          console.log(this.status + "winnerStatus");
           this.openDialogWinner(user.username)
         })
       })
@@ -97,7 +85,6 @@ export class GameComponent implements OnInit {
   }
 
   getRandomNumber(): void {
-    console.log('status:' + this.status);
     if (this.isCardSelected() && this.isPlaying) {
       this.cardService.getRandomCard(this.status).subscribe(res => {
         this.status = 0
