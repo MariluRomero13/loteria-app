@@ -73,10 +73,7 @@ export class GameComponent implements OnInit {
         })
       })
 
-      ws.on('close', () => {
-        console.log('Socket close');
-        ws.leaveRoom("new:random")
-      })
+      
 
 
 
