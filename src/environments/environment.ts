@@ -6,7 +6,7 @@ export const environment = {
   production: false
 };
 
-export const BASE_URL = 'http://192.168.0.13:3333/'
+export const BASE_URL = 'http://localhost:3333/'
 
 /*
  * For easier debugging in development mode, you can import the following file

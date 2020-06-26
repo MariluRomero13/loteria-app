@@ -6,7 +6,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogWinnerComponent } from '../dialog-winner/dialog-winner.component';
-const ws = Ws('ws://192.168.0.13:3333', { path:'ws' })
+const ws = Ws('ws://localhost:3333', { path:'ws' })
 
 @Component({
   selector: 'app-game',
@@ -18,11 +18,15 @@ export class GameComponent implements OnInit {
   constructor(private cardService: CardsService, private authService: AuthService, private route: ActivatedRoute,
     private router: Router, private dialog: MatDialog) { 
     const data = this.authService.getDataUser()
+    console.log("dataaaaaa", data);
+    
     if (data !== null) {
+      console.log('data', data);
       this.data = JSON.parse(data)
       this.link = this.data.link
       this.isModerator = true
     } else if (this.route.snapshot.params.link !== undefined) {
+      console.log('data null', this.route.snapshot.params.link);
       this.link = this.route.snapshot.params.link
       this.isInvited = true
       this.isPlayAlone = false
@@ -55,8 +59,9 @@ export class GameComponent implements OnInit {
       const random = ws.subscribe('random')
       random.on('ready',() => {
         random.on('new:random', (data) => {
-          if(!this.isPlaying) return;
+          console.log(data);
           if (this.isPlayAlone) {
+              console.log("Play alone");
               this.card = data
               this.playSound(data.sound)
               this.cardsPast.push(data)
@@ -69,8 +74,10 @@ export class GameComponent implements OnInit {
             } else {
               this.router.navigate(['/main/mode'])
             }
+          } else {
+            // En caso de que data regrese nulo
+            console.log('link is null');  
           }
-        
         })
       })
 
