@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { LinkService } from 'src/app/services/link.service';
 import { Router } from '@angular/router';
+import { MatDialogRef } from '@angular/material/dialog';
 
 
 
@@ -14,7 +15,8 @@ export class DialogInsertLinkComponent implements OnInit {
 
   formGroup: FormGroup
 
-  constructor(private linkService: LinkService, private router: Router) { }
+  constructor(private linkService: LinkService, private router: Router, 
+    private dialog: MatDialogRef<DialogInsertLinkComponent>) { }
 
   ngOnInit(): void {
     this.formGroup = new FormGroup({
@@ -31,6 +33,7 @@ export class DialogInsertLinkComponent implements OnInit {
           alert('El link es invalido')
         } else {
           this.router.navigate(["/main/game", link])
+          this.dialog.close()
         }
       })
     } else {

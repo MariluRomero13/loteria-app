@@ -4,6 +4,8 @@ import { CardsService } from 'src/app/services/cards.service';
 import Ws from '@adonisjs/websocket-client'
 import { AuthService } from 'src/app/services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogWinnerComponent } from '../dialog-winner/dialog-winner.component';
 const ws = Ws('ws://192.168.0.13:3333', { path:'ws' })
 
 @Component({
@@ -14,7 +16,7 @@ const ws = Ws('ws://192.168.0.13:3333', { path:'ws' })
 export class GameComponent implements OnInit {
   cards:ICard [] = new Array(16)
   constructor(private cardService: CardsService, private authService: AuthService, private route: ActivatedRoute,
-    private router: Router) { 
+    private router: Router, private dialog: MatDialog) { 
     const data = this.authService.getDataUser()
     if (data !== null) {
       this.data = JSON.parse(data)
@@ -27,7 +29,7 @@ export class GameComponent implements OnInit {
     }
   }
 
-  card:ICard 
+  card:ICard = null
   isPlaying: boolean = false
   cardsPast: ICard[] = []
   cardsSelected = [] = []
@@ -37,6 +39,11 @@ export class GameComponent implements OnInit {
   isInvited: boolean = false
   data: any = null
   link: string = null
+  isWinnerCentral: boolean = false
+  isWinnerDiagonalLeft: boolean = false
+  isWinnerDiagonalRight: boolean = false
+  isWinner: boolean = false
+
 
   
 
@@ -49,12 +56,12 @@ export class GameComponent implements OnInit {
       random.on('ready',() => {
         random.on('new:random', (data) => {
           if(!this.isPlaying) return;
-          const link = data.userLink[0].links[0].link
           if (this.isPlayAlone) {
               this.card = data
               this.playSound(data.sound)
               this.cardsPast.push(data)
-          } else if (link !== null || link !== undefined){
+          } else if (data.userLink[0].links.length){
+            const link = data.userLink[0].links[0].link
             if (this.link === link) {
               this.card = data
               this.playSound(data.sound)
@@ -64,6 +71,26 @@ export class GameComponent implements OnInit {
             }
           }
         
+        })
+      })
+
+      ws.on('close', () => {
+        console.log('Socket close');
+        ws.leaveRoom("new:random")
+      })
+
+
+
+      const winner = ws.subscribe('winner')
+      winner.on('ready', () => {
+        console.log('winner open');
+        winner.on('new:winner', (user) => {
+          console.log(user);
+          if(this.isWinner) {
+            this.resetGame()
+          }
+          console.log(this.status + "winnerStatus");
+          this.openDialogWinner(user.username)
         })
       })
     })
@@ -76,7 +103,7 @@ export class GameComponent implements OnInit {
   }
 
   getRandomNumber(): void {
-    console.log('satatus:' + this.status);
+    console.log('status:' + this.status);
     if (this.isCardSelected() && this.isPlaying) {
       this.cardService.getRandomCard(this.status).subscribe(res => {
         this.status = 0
@@ -92,13 +119,19 @@ export class GameComponent implements OnInit {
       alert('Escoje una carta') 
       return
     }
+    this.status = 1
     this.isPlaying = true
   }
 
-  eventCard(e, i): void {
-    console.log(i);
-    console.log(e.target.dataset.card);
+  openDialogWinner (winner:string) {
+    this.dialog.open(DialogWinnerComponent,
+      {
+        width: '450px',
+        data:{ winner } 
+      })
+  }
 
+  eventCard(e, i): void {
     if (this.cardsPast.length) {
       const numberOfCard = e.target.dataset.card
       const found = this.cardsPast.find(item => {
@@ -124,18 +157,59 @@ export class GameComponent implements OnInit {
   }
 
   askWinner (): void {
-    if(this.isFirstHorizontal(this.cardsSelected) || this.isSecondHorizontal(this.cardsSelected) 
+    /*if(this.isFirstHorizontal(this.cardsSelected) || this.isSecondHorizontal(this.cardsSelected) 
     || this.isThirdHorizontal(this.cardsSelected) || this.isLastHorizontal(this.cardsSelected) 
     || this.isFirstVertical(this.cardsSelected) || this.isSecondVertical(this.cardsSelected)
     || this.isThirdVertical(this.cardsSelected) || this.isLastVertical(this.cardsSelected)
     || this.isDiagonalRight(this.cardsSelected) || this.isDiagonalLeft(this.cardsSelected)
     || this.isCenter(this.cardsSelected)) {
-      alert('winner')
-      this.resetGame()
+      this.status = 2
+      this.getRandomNumber()
+      //this.resetGame()
+    } else {
+      alert("No le hagas al micky")
+    }*/
+    if (this.cardsSelected.length === 15) {
+      this.isWinner = true
+      this.status = 2
+      this.getRandomNumber()
+    } else {
+      alert("No le hagas al micky")
+    }
+
+  }
+
+  askCenterWinner (): void {
+    if(this.isCenter()){
+      this.isWinnerCentral = true
+      this.status = 2
+      this.getRandomNumber()
+
     } else {
       alert("No le hagas al micky")
     }
   }
+
+  askDiagonalLeftWinner(): void {
+    if(this.isDiagonalLeft()) {
+      this.isWinnerDiagonalLeft = true
+      this.status = 2
+      this.getRandomNumber()
+    } else {
+      alert("No le hagas al micky")
+    }
+  }
+
+  askDiagonalRightWinner(): void {
+    if(this.isDiagonalRight()) {
+      this.isWinnerDiagonalRight = true
+      this.status = 2
+      this.getRandomNumber()
+    } else {
+      alert("No le hagas al micky")
+    }
+  }
+
 
   //Ways to win left to right
   isFirstVertical (array): boolean {
@@ -147,11 +221,17 @@ export class GameComponent implements OnInit {
 
   resetGame() {
     this.isPlaying = false
+    this.card = null
     this.cards = new Array(16)
     this.cardsPast = []
     this.cardsSelected = []
     this.status = 1
+    this. isWinnerCentral= false
+    this.isWinnerDiagonalLeft= false
+    this.isWinnerDiagonalRight = false
+    this.isWinner= false
   }
+  
 
   isSecondVertical (array): boolean {
     return array.includes(1) 
@@ -202,25 +282,25 @@ export class GameComponent implements OnInit {
     && array.includes(15)
   }
 
-  isDiagonalRight (array): boolean {
-    return array.includes(0) 
-    && array.includes(5) 
-    && array.includes(10) 
-    && array.includes(15)
+  isDiagonalLeft (): boolean {
+    return this.cardsSelected.includes(0) 
+    && this.cardsSelected.includes(5) 
+    && this.cardsSelected.includes(10) 
+    && this.cardsSelected.includes(15)
   }
 
-  isDiagonalLeft (array): boolean {
-    return array.includes(3) 
-    && array.includes(6) 
-    && array.includes(9) 
-    && array.includes(11)
+  isDiagonalRight (): boolean {
+    return this.cardsSelected.includes(3) 
+    && this.cardsSelected.includes(6) 
+    && this.cardsSelected.includes(9) 
+    && this.cardsSelected.includes(12)
   }
 
-  isCenter (array): boolean {
-    return array.includes(5) 
-    && array.includes(6) 
-    && array.includes(9) 
-    && array.includes(10)
+  isCenter (): boolean {
+    return this.cardsSelected.includes(5) 
+    && this.cardsSelected.includes(6) 
+    && this.cardsSelected.includes(9) 
+    && this.cardsSelected.includes(10)
   }
 
 

@@ -19,6 +19,7 @@ import { ChooseGameModeComponent } from './components/choose-game-mode/choose-ga
 import { DialogComponent } from './components/dialog/dialog.component';
 import { DialogInsertLinkComponent } from './components/dialog-insert-link/dialog-insert-link.component';
 import { GameComponent } from './components/game/game.component';
+import { DialogWinnerComponent } from './components/dialog-winner/dialog-winner.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { GameComponent } from './components/game/game.component';
     ChooseGameModeComponent,
     DialogComponent,
     DialogInsertLinkComponent,
-    GameComponent
+    GameComponent,
+    DialogWinnerComponent
   ],
   imports: [
     BrowserModule,
