@@ -74,9 +74,6 @@ export class GameComponent implements OnInit {
             } else {
               this.router.navigate(['/main/mode'])
             }
-          } else {
-            // En caso de que data regrese nulo
-            console.log('link is null');  
           }
         })
       })
