@@ -138,18 +138,7 @@ export class GameComponent implements OnInit {
   }
 
   askWinner (): void {
-    /*if(this.isFirstHorizontal(this.cardsSelected) || this.isSecondHorizontal(this.cardsSelected) 
-    || this.isThirdHorizontal(this.cardsSelected) || this.isLastHorizontal(this.cardsSelected) 
-    || this.isFirstVertical(this.cardsSelected) || this.isSecondVertical(this.cardsSelected)
-    || this.isThirdVertical(this.cardsSelected) || this.isLastVertical(this.cardsSelected)
-    || this.isDiagonalRight(this.cardsSelected) || this.isDiagonalLeft(this.cardsSelected)
-    || this.isCenter(this.cardsSelected)) {
-      this.status = 2
-      this.getRandomNumber()
-      //this.resetGame()
-    } else {
-      alert("No le hagas al micky")
-    }*/
+    
     if (this.cardsSelected.length === 16) {
       this.status = 2
       this.getRandomNumber()
@@ -187,15 +176,6 @@ export class GameComponent implements OnInit {
     }
   }
 
-
-  //Ways to win left to right
-  isFirstVertical (array): boolean {
-    return array.includes(0) 
-    && array.includes(4) 
-    && array.includes(8) 
-    && array.includes(12)
-  }
-
   resetGame() {
     this.isPlaying = false
     this.card = null
@@ -207,55 +187,64 @@ export class GameComponent implements OnInit {
     this.isWinnerDiagonalLeft= false
     this.isWinnerDiagonalRight = false
   }
+
+
+  //Ways to win left to right
+  isFirstVertical (): boolean {
+    return this.cardsSelected.includes(0) 
+    && this.cardsSelected.includes(4) 
+    && this.cardsSelected.includes(8) 
+    && this.cardsSelected.includes(12)
+  }
   
 
-  isSecondVertical (array): boolean {
-    return array.includes(1) 
-    && array.includes(5) 
-    && array.includes(9) 
-    && array.includes(13)
+  isSecondVertical (): boolean {
+    return this.cardsSelected.includes(1) 
+    && this.cardsSelected.includes(5) 
+    && this.cardsSelected.includes(9) 
+    && this.cardsSelected.includes(13)
   }
 
-  isThirdVertical (array): boolean {
-    return array.includes(2) 
-    && array.includes(6) 
-    && array.includes(10) 
-    && array.includes(14)
+  isThirdVertical (): boolean {
+    return this.cardsSelected.includes(2) 
+    && this.cardsSelected.includes(6) 
+    && this.cardsSelected.includes(10) 
+    && this.cardsSelected.includes(14)
   }
 
-  isLastVertical (array): boolean {
-    return array.includes(3) 
-    && array.includes(7) 
-    && array.includes(11) 
-    && array.includes(15)
+  isLastVertical (): boolean {
+    return this.cardsSelected.includes(3) 
+    && this.cardsSelected.includes(7) 
+    && this.cardsSelected.includes(11) 
+    && this.cardsSelected.includes(15)
   }
 
-  isFirstHorizontal (array): boolean {
-    return array.includes(0) 
-    && array.includes(1) 
-    && array.includes(2) 
-    && array.includes(3)
+  isFirstHorizontal (): boolean {
+    return this.cardsSelected.includes(0) 
+    && this.cardsSelected.includes(1) 
+    && this.cardsSelected.includes(2) 
+    && this.cardsSelected.includes(3)
   }
 
-  isSecondHorizontal (array): boolean {
-    return array.includes(4) 
-    && array.includes(5) 
-    && array.includes(6) 
-    && array.includes(7)
+  isSecondHorizontal (): boolean {
+    return this.cardsSelected.includes(4) 
+    && this.cardsSelected.includes(5) 
+    && this.cardsSelected.includes(6) 
+    && this.cardsSelected.includes(7)
   }
 
-  isThirdHorizontal (array): boolean {
-    return array.includes(8) 
-    && array.includes(9) 
-    && array.includes(10) 
-    && array.includes(11)
+  isThirdHorizontal (): boolean {
+    return this.cardsSelected.includes(8) 
+    && this.cardsSelected.includes(9) 
+    && this.cardsSelected.includes(10) 
+    && this.cardsSelected.includes(11)
   }
 
-  isLastHorizontal (array): boolean {
-    return array.includes(12) 
-    && array.includes(13) 
-    && array.includes(14) 
-    && array.includes(15)
+  isLastHorizontal (): boolean {
+    return this.cardsSelected.includes(12) 
+    && this.cardsSelected.includes(13) 
+    && this.cardsSelected.includes(14) 
+    && this.cardsSelected.includes(15)
   }
 
   isDiagonalLeft (): boolean {
