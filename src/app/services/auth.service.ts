@@ -32,6 +32,10 @@ export class AuthService {
     return localStorage.getItem('data')
   }
 
+  removeDataUser() {
+    return localStorage.removeItem('data')
+  }
+
   getToken() {
     return localStorage.getItem('token')
   }

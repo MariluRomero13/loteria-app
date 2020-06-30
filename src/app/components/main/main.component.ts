@@ -18,6 +18,7 @@ export class MainComponent implements OnInit {
     this.authService.logout().subscribe( res => {
       if(res.success){
         this.authService.removeTokens()
+        this.authService.removeDataUser()
         this.router.navigate([''])
       }
     }, error => {
