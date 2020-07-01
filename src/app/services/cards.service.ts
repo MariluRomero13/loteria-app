@@ -15,9 +15,15 @@ export class CardsService {
     return this.http.get(`${BASE_URL}generate-card`)
   }
 
-  getRandomCard(status): Observable<any> {
-    return this.http.post(`${BASE_URL}get-random-number`,{status}, {
+  getRandomCard(isFirstTime: boolean): Observable<any> {
+    return this.http.post(`${BASE_URL}get-random-number`,{ is_first_time: isFirstTime }, {
       "headers":{Authorization: "bearer " + this.authService.getToken()}
     })
   }
-}
+
+  sendWinnerMode (mode) : Observable<any> {
+    return this.http.post(`${BASE_URL}get-winner`,{ winner_mode: mode }, {
+      "headers":{Authorization: "bearer " + this.authService.getToken()}
+    })
+  }
+  }

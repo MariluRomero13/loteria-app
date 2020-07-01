@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogWinnerComponent } from '../dialog-winner/dialog-winner.component';
 const ws = Ws('ws://192.168.0.13:3333', { path:'ws' })
+import { Winner } from 'src/app/constants/Game'
 
 @Component({
   selector: 'app-game',
@@ -18,12 +19,13 @@ export class GameComponent implements OnInit {
   constructor(private cardService: CardsService, private authService: AuthService, private route: ActivatedRoute,
     private router: Router, private dialog: MatDialog) { 
     const data = this.authService.getDataUser()
-    
+    console.log(this.route.snapshot.params.link);
     if (data !== null) {
       this.data = JSON.parse(data)
       this.link = this.data.link
       this.isModerator = true
     } else if (this.route.snapshot.params.link !== undefined) {
+      console.log('entro');
       this.link = this.route.snapshot.params.link
       this.isInvited = true
       this.isPlayAlone = false
@@ -34,14 +36,14 @@ export class GameComponent implements OnInit {
   isPlaying: boolean = false
   cardsPast: ICard[] = []
   cardsSelected = [] = []
-  status = 1
+  isFirstTime = false
   isModerator: boolean = false
   isPlayAlone: boolean = true
   isInvited: boolean = false
   data: any = null
   link: string = null
   isWinnerCentral: boolean = false
-  isWinnerDiagonalLeft: boolean = false
+  isWinnerLottery: boolean = false
   isWinnerDiagonalRight: boolean = false
 
   ngOnInit(): void {
@@ -51,13 +53,13 @@ export class GameComponent implements OnInit {
       const random = ws.subscribe('random')
       random.on('ready',() => {
         random.on('new:random', (data) => {
+          console.log(data);
           if (this.isPlayAlone) {
               this.card = data
               this.playSound(data.sound)
               this.cardsPast.push(data)
-          } else if (data.userLink[0].links.length){
-            const link = data.userLink[0].links[0].link
-            if (this.link === link) {
+          } else if (data.userData[0].links.length){
+            if (data.userData[0].links[0].link === this.link) {
               this.card = data
               this.playSound(data.sound)
               this.cardsPast.push(data)
@@ -70,9 +72,24 @@ export class GameComponent implements OnInit {
 
       const winner = ws.subscribe('winner')
       winner.on('ready', () => {
-        winner.on('new:winner', (user) => {
-          this.resetGame()
-          this.openDialogWinner(user.username)
+        winner.on('new:winner', (data) => {
+          let mode
+          switch(data.winnerMode) {
+            case Winner.modeCenter:
+              this.isWinnerCentral = true
+              mode = "central"
+            break;
+            case Winner.modeLottery:
+              this.isWinnerLottery = true
+              mode = "loteria"
+            break;
+            case Winner.modeFull:
+              this.resetGame()
+              mode = "carta llena"
+            break;
+          }
+          
+          this.openDialogWinner({ user:data.user.username, mode })
         })
       })
     })
@@ -86,8 +103,8 @@ export class GameComponent implements OnInit {
 
   getRandomNumber(): void {
     if (this.isCardSelected() && this.isPlaying) {
-      this.cardService.getRandomCard(this.status).subscribe(res => {
-        this.status = 0
+      this.cardService.getRandomCard(this.isFirstTime).subscribe(res => {
+        this.isFirstTime = false
       })
     } else {
       alert("Escoja una carta")
@@ -100,19 +117,22 @@ export class GameComponent implements OnInit {
       alert('Escoje una carta') 
       return
     }
-    this.status = 1
+    this.isFirstTime = true
     this.isPlaying = true
   }
 
-  openDialogWinner (winner:string) {
+  openDialogWinner (data:Object) {
     this.dialog.open(DialogWinnerComponent,
       {
         width: '450px',
-        data:{ winner } 
+        data
       })
   }
 
   eventCard(e, i): void {
+    if(this.cardsSelected.includes(i)) 
+      return
+
     if (this.cardsPast.length) {
       const numberOfCard = e.target.dataset.card
       const found = this.cardsPast.find(item => {
@@ -123,9 +143,7 @@ export class GameComponent implements OnInit {
         e.target.parentNode.childNodes[2].classList.remove("cardNotFound")
         this.cardsSelected.push(i)
       }
-
     }
-    
   }
 
   isCardSelected ():boolean {
@@ -138,43 +156,38 @@ export class GameComponent implements OnInit {
   }
 
   askWinner (): void {
-    
     if (this.cardsSelected.length === 16) {
-      this.status = 2
-      this.getRandomNumber()
+      this.sendWinnerMode(Winner.modeFull)
     } else {
       alert("No le hagas al micky")
     }
-
   }
 
   askCenterWinner (): void {
     if(this.isCenter()){
-      this.isWinnerCentral = true
-      alert("ganaste central")
-
+      this.sendWinnerMode(Winner.modeCenter)
     } else {
-      alert("No le hagas al micky")
+      alert("No has ganado central")
     }
   }
 
-  askDiagonalLeftWinner(): void {
-    if(this.isDiagonalLeft()) {
-      this.isWinnerDiagonalLeft = true
-      alert("ganaste diagonal izquierda")
+  askLotteryWinner (): void {
+    if(this.isFirstVertical() || this.isSecondVertical() || this.isThirdVertical()
+    || this.isFirstHorizontal() || this.isSecondHorizontal() || this.isThirdHorizontal()
+    || this.isLastHorizontal() || this.isDiagonalLeft() || this.isDiagonalRight()){
+      this.sendWinnerMode(Winner.modeLottery)
     } else {
-      alert("No le hagas al micky")
+      alert("No has ganado loteria")
     }
   }
 
-  askDiagonalRightWinner(): void {
-    if(this.isDiagonalRight()) {
-      this.isWinnerDiagonalRight = true
-      alert("ganaste diagonal derecha")
-    } else {
-      alert("No le hagas al micky")
-    }
+  sendWinnerMode (mode) {
+    this.cardService.sendWinnerMode(mode).subscribe(res => {
+      console.log(res);
+    })
   }
+
+
 
   resetGame() {
     this.isPlaying = false
@@ -182,10 +195,8 @@ export class GameComponent implements OnInit {
     this.cards = new Array(16)
     this.cardsPast = []
     this.cardsSelected = []
-    this.status = 1
-    this. isWinnerCentral= false
-    this.isWinnerDiagonalLeft= false
-    this.isWinnerDiagonalRight = false
+    this.isWinnerCentral= false
+    this.isWinnerLottery= false
   }
 
 

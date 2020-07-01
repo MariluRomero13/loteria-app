@@ -9,9 +9,13 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 export class DialogWinnerComponent implements OnInit {
 
   winner:string
+  mode: string
 
   constructor(public dialogRef: MatDialogRef<DialogWinnerComponent>,
-    @Inject(MAT_DIALOG_DATA) public data:any) { this.winner = data.winner }
+    @Inject(MAT_DIALOG_DATA) public data:any) { 
+      this.winner = data.user 
+      this.mode = data.mode
+    }
 
   ngOnInit(): void {
   }

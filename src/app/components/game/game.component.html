@@ -8,8 +8,8 @@
                  style="width: 100%; height: 100%;" 
                 src="{{card.img}}"/>
 
-                <img [ngClass]="'cardNotFound'" src="./assets/img/bean.png" width="40%" height="40%" 
-                style="top: 30%; left: 30%; position:absolute; margin: auto;display: block;">
+                <img [ngClass]="'cardNotFound'" src="./assets/img/gali.gif" width="220%" height="110%" 
+                style="top: -10%; left: -40%; position:absolute; margin: auto;display: block;">
             </div>
 
         </div>
@@ -17,12 +17,20 @@
         <div class="main-div" fxFlex="30" style="float: right;">
             <mat-card >
                 <div fxLayout="column" class="cardButtons">
-                    <button *ngIf="!isPlaying" mat-raised-button color="primary" (click)="generateCard()">Generar carta</button>
-                    <button *ngIf="isPlaying && !isWinnerCentral" (click)="askCenterWinner()" mat-raised-button class="mt-5" color="primary">Gané central</button>
-                    <button *ngIf="isPlaying && !isWinnerDiagonalLeft" (click)="askDiagonalLeftWinner()" mat-raised-button class="mt-5" color="primary">Gané diagonal izquierda</button>
-                    <button *ngIf="isPlaying && !isWinnerDiagonalRight" (click)="askDiagonalRightWinner()" mat-raised-button class="mt-5" color="primary">Gané diagonal derecha</button>
-        <button mat-raised-button color="accent" 
-        (click)="isPlaying ? askWinner() : play()">{{isPlaying ? 'He ganado carta llena' : 'Jugar'}}</button>
+                    <button *ngIf="!isPlaying" mat-raised-button color="primary" (click)="generateCard()">
+                        Generar carta
+                    </button>
+                    <button *ngIf="isPlaying && !isWinnerCentral" (click)="askCenterWinner()" 
+                    mat-raised-button class="mt-5" color="primary">
+                        central
+                    </button>
+                    <button *ngIf="isPlaying && !isWinnerLottery" (click)="askLotteryWinner()" 
+                    mat-raised-button class="mt-5" color="primary">
+                        Loteria
+                    </button>
+                    <button mat-raised-button color="accent" (click)="isPlaying ? askWinner() : play()">
+                        {{ isPlaying ? 'llena' : 'Jugar' }}
+                    </button>
                 </div>
             </mat-card>
         </div> 
