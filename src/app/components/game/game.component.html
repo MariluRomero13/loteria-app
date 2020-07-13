@@ -22,14 +22,14 @@
                     </button>
                     <button *ngIf="isPlaying && !isWinnerCentral" (click)="askCenterWinner()" 
                     mat-raised-button class="mt-5" color="primary">
-                        central
+                        Central
                     </button>
                     <button *ngIf="isPlaying && !isWinnerLottery" (click)="askLotteryWinner()" 
                     mat-raised-button class="mt-5" color="primary">
                         Loteria
                     </button>
                     <button mat-raised-button color="accent" (click)="isPlaying ? askWinner() : play()">
-                        {{ isPlaying ? 'llena' : 'Jugar' }}
+                        {{ isPlaying ? 'Llena' : 'Jugar' }}
                     </button>
                 </div>
             </mat-card>

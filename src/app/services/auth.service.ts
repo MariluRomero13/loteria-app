@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
-import { BASE_URL } from 'src/environments/environment';
+//import { BASE_URL } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -9,13 +9,14 @@ import { Observable } from 'rxjs';
 export class AuthService {
 
   constructor(private http: HttpClient) { }
+  BASE_URL = 'http://192.168.0.13:3333/'
 
   login(data): Observable<any> {
-    return this.http.post(`${BASE_URL}login`, data)
+    return this.http.post("http://192.168.0.13:3333/login", data)
   }
 
   logout(): Observable<any> {
-    return this.http.post(`${BASE_URL}logout`, {refresh_token: localStorage.getItem("refreshToken")})
+    return this.http.post(`${this.BASE_URL}logout`, {refresh_token: localStorage.getItem("refreshToken")})
   }
 
   saveTokens (data) {
